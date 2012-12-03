@@ -24,12 +24,6 @@ void remove_memory(int mem)
 		memory_allocations[i] = memory_allocations[i-1];
 }
 
-u32int init_main_memory(u32int size)
-{
-	setup_memory(main_memory, size);
-	return (u32int)&main_memory;
-}
-
 void end_memory()
 {
 	int i = 0;

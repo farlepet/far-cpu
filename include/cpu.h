@@ -16,16 +16,25 @@ typedef enum
 	OP128S,
 	OP256S,
 	OP512S,
-} cpu_speed; //operations per second
+	OP1024S,
+	OP2048S,
+	OP4096S,
+	UNLIMITED
+} cpu_speed; //maximum operations per second
 
 typedef struct
 {
 	char *memory;
 	u32int memory_size;
 	registers regs;
-	cpu_speed speed; //not yet inplimented, will be a while
+	u8int IO;
+	bool inOut; //wether IO is an input or an output (true = input)
+	bool overflow;
+	cpu_speed speed; //not yet inplimented, it will be a while
 } farcpu;
 
-int init_cpu(farcpu *cpu);
+void cpu_reset(farcpu *cpu);
+
+int init_cpu(farcpu *cpu, u32int mem_size);
 
 #endif

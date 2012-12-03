@@ -44,11 +44,7 @@ typedef enum
 	SP
 } Register;
 
-char *main_memory;
-
 int setup_memory(char *mem, u32int size);
-
-u32int init_main_memory(u32int size);
 
 void remove_memory(int mem);
 

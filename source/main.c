@@ -5,19 +5,31 @@
  * 
  */
 
+#define USAGE "Usage:\n\
+    farcpu [mem_size]\n\
+        mem_size: size of the virtal CPU's RAM\n"
+int ver[3] = {0,0,1};
+
 #include <stdio.h>
 #include <common.h>
 #include <memory.h>
+#include <cpu.h>
 #include <math.h>
 
-int main()
+int main(int argc, char *argv[])
 {
-	char *temp;
-	printf("Hello world\n");
-	printf("Set up main memory of size %d at: 0x%lX\n", 2048, init_main_memory(2048));
-	setup_memory(temp, pow(2,16));
-	printf("Set up test memory of size %ld at: 0x%lX\n", (u32int)pow(2, 16), (u32int)&temp);
-	end_memory();
-	return (0);
+	printf("far-cpu v%d.%d.%d\n", ver[0], ver[1], ver[2]);
+	if(argc < 2)
+	{
+		printf(USAGE);
+		return -1;
+	}
+	
+	printf("initilizing cpu 1...\n");
+	farcpu cpu1;
+	init_cpu(&cpu1, atoi(argv[1]));
+	printf("\tMemory location: 0x%lX\n", (u32int)(cpu1.memory));
+	printf("\tMemory size: %ldB\n", cpu1.memory_size);
+	return 0;
 }
 
