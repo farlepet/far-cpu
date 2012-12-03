@@ -44,6 +44,15 @@ typedef enum
 	SP
 } Register;
 
+typedef enum
+{
+	REGISTER,
+	BYTE,
+	WORD,
+	DWORD,
+	IO
+} input_location;
+
 int setup_memory(char *mem, u32int size);
 
 void remove_memory(int mem);

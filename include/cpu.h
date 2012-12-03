@@ -37,4 +37,22 @@ void cpu_reset(farcpu *cpu);
 
 int init_cpu(farcpu *cpu, u32int mem_size);
 
+typedef enum
+{
+	NOP, //No operation
+	INC, //Increment, takes 1 byte: registers
+	DEC, //Opposite of INC
+	ADD, //Add 2 numbers and put into AL, takes 4 inputs: (INPUT, (dependion on input))*2
+	SUB, //Opposite of ADD
+	MUL, //Same as ADD, but multiplication
+	DIV, //Same as ADD, but division
+	MOVNM, //Move Number to Memory, byte, dword
+	MOVRM, //Move Register to Memory, Register, dword
+	MOVIM, //Move Input into Memory
+	MOVMM, //Move Memory into Memory
+	SHL,
+	SHR,
+	HWU, //Hardware update
+} cpu_opcode;
+
 #endif
