@@ -47,9 +47,7 @@ typedef enum
 typedef enum
 {
 	REGISTER,
-	BYTE,
-	WORD,
-	DWORD,
+	NUMBER,
 	IO
 } input_location;
 

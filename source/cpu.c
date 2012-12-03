@@ -7,7 +7,6 @@ void cpu_reset(farcpu *cpu)
 	cpu->IO = 0;
 	cpu->inOut = false;
 	cpu->overflow = 0;
-	
 }
 
 int init_cpu(farcpu *cpu, u32int mem_size)
