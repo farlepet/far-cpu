@@ -18,8 +18,31 @@ typedef struct
 	u32int CL; //    |-----> double word regs |
 	u32int DL; //----|------------------------|
 
-	u32int 
+	u32int PC; //Program Counter/Instruction Pointer
+	u32int IR; //Instruction
+	u32int SP; //Stack Pointer
+	
 } registers;
+
+typedef enum
+{
+	AB = 0,
+	BB,
+	CB,
+	DB,
+	AS,
+	BS,
+	CS,
+	DS,
+	AL,
+	BL,
+	CL,
+	DL,
+
+	PC,
+	IR,
+	SP
+} Register;
 
 char *main_memory;
 
