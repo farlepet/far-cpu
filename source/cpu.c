@@ -38,8 +38,65 @@ u32int process_opcode(farcpu *cpu)
 
 		case DEC:
 			mem_get8(memory, PC) = mem_get8(memory, PC) - 1; mem_add++; break;
+
+		case ADD:
+			return 0;
 	}
 	return 0;
+}
+
+u8int process_in_loc(farcpu *cpu, char *mem, u32int loc, u32int *out)
+{
+	input_location in = mem_get8(mem, loc);
+	switch(in)
+	{
+		case REGISTER:
+			*out = get_register(cpu, mem_get8(mem, loc + 1));
+			return 2;
+
+		case NUMBER:
+			*out = mem_get16(mem, loc + 1);
+			return 3;
+
+		case IO:
+			*out = cpu->IO;
+			return 1;
+
+		case MEMORY:
+			*out = mem_get8(mem, mem_get32(mem, loc + 1));
+			return 5;
+
+		default:
+			*out = 0;
+			return 0;
+	}
+}
+
+u32int get_register(farcpu *cpu, Register reg)
+{
+	switch(reg)
+	{
+		case AB: return cpu->regs.AB;
+		case BB: return cpu->regs.BB;
+		case CB: return cpu->regs.CB;
+		case DB: return cpu->regs.DB;
+
+		case AS: return cpu->regs.AS;
+		case BS: return cpu->regs.BS;
+		case CS: return cpu->regs.CS;
+		case DS: return cpu->regs.DS;
+
+		case AL: return cpu->regs.AL;
+		case BL: return cpu->regs.BL;
+		case CL: return cpu->regs.CL;
+		case DL: return cpu->regs.DL;
+
+		case PC: return cpu->regs.SP;
+		case IR: return cpu->regs.IR;
+		case SP: return cpu->regs.SP;
+
+		default: return 0;
+	}
 }
 
 u32int process_extended_opcode(farcpu *cpu)

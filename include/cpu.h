@@ -85,4 +85,8 @@ typedef enum
 
 u32int process_extended_opcode(farcpu *cpu);
 
+u8int process_in_loc(farcpu *cpu, char *mem, u32int loc, u32int *out);
+
+u32int get_register(farcpu *cpu, Register reg);
+
 #endif
