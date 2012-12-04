@@ -32,3 +32,14 @@ void end_memory()
 		remove_memory(i);
 	}
 }
+
+u8int mem_read8(char *mem, u32int loc){ return *(u8int *)(mem + loc); }
+u16int mem_read16(char *mem, u32int loc){ return *(u16int *)(mem + loc); }
+u32int mem_read32(char *mem, u32int loc){ return *(u32int *)(mem + loc); }
+u64int mem_read64(char *mem, u32int loc){ return *(u64int *)(mem + loc); }
+
+void mem_write8(char *mem, u32int loc, u8int in){ *(u8int *)(mem + loc) = in; }
+void mem_write16(char *mem, u32int loc, u16int in){ *(u16int *)(mem + loc) = in; }
+void mem_write32(char *mem, u32int loc, u32int in){ *(u32int *)(mem + loc) = in; }
+void mem_write64(char *mem, u32int loc, u64int in){ *(u64int *)(mem + loc) = in; }
+

@@ -77,7 +77,12 @@ typedef enum
 	JNL, //Jump only if AL !< BL
 	JLE, //Jump only if AL <= BL
 	JNLE, //Jump only if AL !<= BL
-	
+
+
+
+	EXOP = 255 //if this requires an extra byte, so this CPU allows up to 512 opcodes, this probably wont be used for quite some time........
 } cpu_opcode;
+
+u32int process_extended_opcode(farcpu *cpu);
 
 #endif
