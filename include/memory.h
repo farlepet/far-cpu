@@ -47,8 +47,10 @@ typedef enum
 typedef enum
 {
 	REGISTER,
-	NUMBER,
-	IO
+	NUMBER,  //not signed DWORD
+	SNUMBER, //signed     long int
+	IO,
+	MEMORY
 } input_location;
 
 int setup_memory(char *mem, u32int size);

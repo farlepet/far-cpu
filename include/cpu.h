@@ -56,9 +56,28 @@ typedef enum
 	MOVNR, //Move Number into Register: byte(size of number: 0:byte 1:word 2:dword), (byte/word/dword), Register
 	MOVIR, //Move Input into Register: Register
 	
-	SHL,
-	SHR,
-	HWU, //Hardware update
+	SHL, //Shifts left [1] [3] times: (INPUT, (depending on input)), (INPUT, (depending on input))
+	SHR, //Opposite of SHL
+	HWU, //Hardware update: word(for future expansion capabilities)
+
+	JMP, //Jump to specified point in program: dword
+	
+	JZ,  //Jump only if AL == 0
+	JNZ, //Jump only if AL != 0
+	
+	JFE, //Jump only if AL == BL
+	JNE, //Jump only if AL != BL
+	
+	JGT, //Jump only if AL > BL
+	JNG, //Jump only if AL !> BL
+	JGE, //Jump only if AL >= BL
+	JNGE, //Jump only if AL !>= BL
+	
+	JLT, //Jump only if AL < BL
+	JNL, //Jump only if AL !< BL
+	JLE, //Jump only if AL <= BL
+	JNLE, //Jump only if AL !<= BL
+	
 } cpu_opcode;
 
 #endif
