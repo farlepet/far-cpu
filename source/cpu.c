@@ -24,7 +24,7 @@ u32int process_opcode(farcpu *cpu)
 {
 	u8int op = cpu->regs.IR;
 	u8int mem_add = 0; //amount to add to memory to get to next OpCode
-	u32int PC = cpu->regs.PC;
+	u32int PC = cpu->regs.PC + 1; //just skip the opcode, to make things easier
 	char *memory = cpu->memory;
 	if(op == EXOP) return process_extended_opcode(cpu);
 
@@ -33,41 +33,54 @@ u32int process_opcode(farcpu *cpu)
 		case NOP:
 			asm("nop"); break; //might just remove the asm statement sometime, just fo-sho right now
 
+		//Arithmatic:
 		case INC:
-			mem_get8(memory, PC) = mem_get8(memory, PC) + 1; mem_add++; break;
+			set_register(cpu, mem_get8(memory, PC), get_register(cpu, mem_get8(memory, PC)) + 1); mem_add++; break;
 
 		case DEC:
-			mem_get8(memory, PC) = mem_get8(memory, PC) - 1; mem_add++; break;
+			set_register(cpu, mem_get8(memory, PC), get_register(cpu, mem_get8(memory, PC)) - 1); mem_add++; break;
 
 		case ADD:
-			return 0;
+			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) + process_in_loc(cpu, memory, PC + mem_add, &mem_add)); break;
+
+		case SUB:
+			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) - process_in_loc(cpu, memory, PC + mem_add, &mem_add)); break;
+
+		case MUL: //TODO:OPTIMIZE
+			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) * process_in_loc(cpu, memory, PC + mem_add, &mem_add)); break;
+
+		case DIV: //TODO:OPTIMIZE
+			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) / process_in_loc(cpu, memory, PC + mem_add, &mem_add)); break;
+
+
+		
 	}
 	return 0;
 }
 
-u8int process_in_loc(farcpu *cpu, char *mem, u32int loc, u32int *out)
+u32int process_in_loc(farcpu *cpu, char *mem, u32int loc, u8int *madd)
 {
 	input_location in = mem_get8(mem, loc);
 	switch(in)
 	{
 		case REGISTER:
-			*out = get_register(cpu, mem_get8(mem, loc + 1));
-			return 2;
+			*madd = *madd + 2;
+			return get_register(cpu, mem_get8(mem, loc + 1));
 
 		case NUMBER:
-			*out = mem_get16(mem, loc + 1);
-			return 3;
+			*madd = *madd + 3;
+			return mem_get16(mem, loc + 1);
 
 		case IO:
-			*out = cpu->IO;
-			return 1;
+			*madd = *madd + 1;
+			return cpu->IO;
 
 		case MEMORY:
-			*out = mem_get8(mem, mem_get32(mem, loc + 1));
-			return 5;
+			*madd = *madd + 5;
+			return mem_get8(mem, mem_get32(mem, loc + 1));
 
 		default:
-			*out = 0;
+			*madd = 0;
 			return 0;
 	}
 }
@@ -96,6 +109,33 @@ u32int get_register(farcpu *cpu, Register reg)
 		case SP: return cpu->regs.SP;
 
 		default: return 0;
+	}
+}
+
+void set_register(farcpu *cpu, Register reg, u32int val)
+{
+	switch(reg)
+	{
+		case AB: cpu->regs.AB = val;
+		case BB: cpu->regs.BB = val;
+		case CB: cpu->regs.CB = val;
+		case DB: cpu->regs.DB = val;
+
+		case AS: cpu->regs.AS = val;
+		case BS: cpu->regs.BS = val;
+		case CS: cpu->regs.CS = val;
+		case DS: cpu->regs.DS = val;
+
+		case AL: cpu->regs.AL = val;
+		case BL: cpu->regs.BL = val;
+		case CL: cpu->regs.CL = val;
+		case DL: cpu->regs.DL = val;
+
+		case PC: cpu->regs.SP = val;
+		case IR: cpu->regs.IR = val;
+		case SP: cpu->regs.SP = val;
+
+		default: return;
 	}
 }
 
