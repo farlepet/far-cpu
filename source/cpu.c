@@ -52,8 +52,91 @@ u32int process_opcode(farcpu *cpu)
 		case DIV: //TODO:OPTIMIZE
 			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) / process_in_loc(cpu, memory, PC + mem_add, &mem_add)); break;
 
+		//Moving data around:     TODO:ADD CONTENT!!!
+		case MOVNM:
+			break;
 
-		
+		case MOVRM:
+			break;
+
+		case MOVIM:
+			break;
+
+		case MOVMM:
+			break;
+
+		case MOVMR:
+			break;
+
+		case MOVNR:
+			break;
+
+		case MOVIR:
+			break;
+
+		//bit-minipulating:
+		case SHL:
+			break;
+
+		case SHR:
+			break;
+
+		case AND:
+			break;
+
+		case OR:
+			break;
+
+		case XOR:
+			break;
+
+		case NOT:
+			break;
+
+		//Low-Level:
+		case HWU:
+			break;
+
+		//branching:
+		case JMP:
+			break;
+
+		case JZ:
+			break;
+
+		case JNZ:
+			break;
+
+		case JFE:
+			break;
+
+		case JNE:
+			break;
+
+		case JGT:
+			break;
+
+		case JNG:
+			break;
+
+		case JGE:
+			break;
+
+		case JNGE:
+			break;
+
+		case JLT:
+			break;
+
+		case JNL:
+			break;
+
+		case JLE:
+			break;
+
+		case JNLE:
+			break;
+
 	}
 	return 0;
 }

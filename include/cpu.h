@@ -58,7 +58,12 @@ typedef enum
 	
 	SHL, //Shifts left [1] [3] times: (INPUT, (depending on input)), (INPUT, (depending on input))
 	SHR, //Opposite of SHL
-	HWU, //Hardware update: word(for future expansion capabilities)
+	AND, //AND and store into AL: (INPUT, (depending on input))*2
+	OR,  //Similar to AND
+	XOR, //Similar to AND
+	NOT, //nots value and stores in AL
+	
+	HWU, //Hardware update: word(not byte, for future expansion capabilities)
 
 	JMP, //Jump to specified point in program: dword
 	
