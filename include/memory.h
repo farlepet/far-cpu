@@ -6,8 +6,8 @@
 typedef struct
 {
 	u8int AB;  //------|----------------------|
-	u8int BB;  //      |                      |
-	u8int CB;  //      |--> byte regs         |
+	u8int BB;  //      |--> byte regs         |
+	u8int CB;  //      |                      |
 	u8int DB;  //------|                      |
 	u16int AS; //-----|                       |
 	u16int BS; //     |                       |-----> General Purpose Registers (Math, MOV's, etc...)
@@ -21,6 +21,7 @@ typedef struct
 	u32int PC; //Program Counter/Instruction Pointer
 	u32int IR; //Instruction
 	u32int SP; //Stack Pointer
+	u16int CSP; //Current Stack Position
 	
 } registers;
 

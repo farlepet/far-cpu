@@ -12,4 +12,6 @@ typedef unsigned short     u16int;
 typedef unsigned long      u32int;
 typedef unsigned long long u64int;
 
+double makeSmall(u32int InBytes, char *out);
+
 #endif
