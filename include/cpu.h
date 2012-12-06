@@ -88,6 +88,8 @@ typedef enum
 	EXOP = 255 //if this requires an extra byte, so this CPU allows up to 512 opcodes, this probably wont be used for quite some time........
 } cpu_opcode;
 
+u32int process_opcode(farcpu *cpu);
+
 u32int process_extended_opcode(farcpu *cpu);
 
 u32int process_in_loc(farcpu *cpu, char *mem, u32int loc, u8int *madd);

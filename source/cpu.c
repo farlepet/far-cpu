@@ -23,7 +23,7 @@ int init_cpu(farcpu *cpu, u32int mem_size)
 u32int process_opcode(farcpu *cpu)
 {
 	u8int op = cpu->regs.IR;
-	u8int mem_add = 0; //amount to add to memory to get to next OpCode
+	u8int mem_add = 1; //amount to add to memory to get to next OpCode
 	u32int PC = cpu->regs.PC + 1; //just skip the opcode, to make things easier
 	char *memory = cpu->memory;
 	if(op == EXOP) return process_extended_opcode(cpu);
@@ -138,6 +138,7 @@ u32int process_opcode(farcpu *cpu)
 			break;
 
 	}
+	cpu->regs.PC += mem_add;
 	return 0;
 }
 
@@ -199,24 +200,24 @@ void set_register(farcpu *cpu, Register reg, u32int val)
 {
 	switch(reg)
 	{
-		case AB: cpu->regs.AB = val;
-		case BB: cpu->regs.BB = val;
-		case CB: cpu->regs.CB = val;
-		case DB: cpu->regs.DB = val;
+		case AB: cpu->regs.AB = val; return;
+		case BB: cpu->regs.BB = val; return;
+		case CB: cpu->regs.CB = val; return;
+		case DB: cpu->regs.DB = val; return;
 
-		case AS: cpu->regs.AS = val;
-		case BS: cpu->regs.BS = val;
-		case CS: cpu->regs.CS = val;
-		case DS: cpu->regs.DS = val;
+		case AS: cpu->regs.AS = val; return;
+		case BS: cpu->regs.BS = val; return;
+		case CS: cpu->regs.CS = val; return;
+		case DS: cpu->regs.DS = val; return;
 
-		case AL: cpu->regs.AL = val;
-		case BL: cpu->regs.BL = val;
-		case CL: cpu->regs.CL = val;
-		case DL: cpu->regs.DL = val;
+		case AL: cpu->regs.AL = val; return;
+		case BL: cpu->regs.BL = val; return;
+		case CL: cpu->regs.CL = val; return;
+		case DL: cpu->regs.DL = val; return;
 
-		case PC: cpu->regs.SP = val;
-		case IR: cpu->regs.IR = val;
-		case SP: cpu->regs.SP = val;
+		case PC: cpu->regs.SP = val; return;
+		case IR: cpu->regs.IR = val; return;
+		case SP: cpu->regs.SP = val; return;
 
 		default: return;
 	}
