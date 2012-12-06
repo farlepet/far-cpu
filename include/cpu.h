@@ -37,6 +37,8 @@ void cpu_reset(farcpu *cpu);
 
 int init_cpu(farcpu *cpu, u32int mem_size);
 
+const char *n_to_instruction[256];
+
 typedef enum
 {
 	NOP = 0, //No operation
@@ -97,5 +99,7 @@ u32int process_in_loc(farcpu *cpu, char *mem, u32int loc, u8int *madd);
 u32int get_register(farcpu *cpu, Register reg);
 
 void set_register(farcpu *cpu, Register reg, u32int val);
+
+u32int cpu_do_div(u32int a, u32int b);
 
 #endif

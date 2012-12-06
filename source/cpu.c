@@ -1,5 +1,10 @@
 #include <cpu.h>
 
+const char *n_to_instruction[256] = 
+{
+	"NOP", "INC", "DEC", "ADD", "SUB", "MUL", "DIV"
+};
+
 void cpu_reset(farcpu *cpu)
 {
 	//memset((cpu->memory), 0, cpu->memory_size);
@@ -41,16 +46,16 @@ u32int process_opcode(farcpu *cpu)
 			set_register(cpu, mem_get8(memory, PC), get_register(cpu, mem_get8(memory, PC)) - 1); mem_add++; break;
 
 		case ADD:
-			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) + process_in_loc(cpu, memory, PC + mem_add, &mem_add)); break;
+			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) + process_in_loc(cpu, memory, PC + mem_add-1 , &mem_add)); break;
 
 		case SUB:
-			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) - process_in_loc(cpu, memory, PC + mem_add, &mem_add)); break;
+			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) - process_in_loc(cpu, memory, PC + mem_add-1, &mem_add)); break;
 
 		case MUL: //TODO:OPTIMIZE
-			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) * process_in_loc(cpu, memory, PC + mem_add, &mem_add)); break;
+			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) * process_in_loc(cpu, memory, PC + mem_add-1, &mem_add)); break;
 
-		case DIV: //TODO:OPTIMIZE
-			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) / process_in_loc(cpu, memory, PC + mem_add, &mem_add)); break;
+		case DIV: //TODO:FLOATING POINT EXCEPTION FIX
+			set_register(cpu, AL, (u32int)(process_in_loc(cpu, memory, PC, &mem_add) / process_in_loc(cpu, memory, PC + mem_add-1, &mem_add))); break;
 
 		//Moving data around:     TODO:ADD CONTENT!!!
 		case MOVNM:
@@ -138,7 +143,7 @@ u32int process_opcode(farcpu *cpu)
 			break;
 
 	}
-	cpu->regs.PC += mem_add;
+	cpu->regs.PC += mem_add + 0;
 	return 0;
 }
 
@@ -149,22 +154,27 @@ u32int process_in_loc(farcpu *cpu, char *mem, u32int loc, u8int *madd)
 	{
 		case REGISTER:
 			*madd = *madd + 2;
+			printf("REGISTER, ");
 			return get_register(cpu, mem_get8(mem, loc + 1));
 
 		case NUMBER:
 			*madd = *madd + 3;
-			return mem_get16(mem, loc + 1);
+			printf("NUMBER(%X), ", mem_get8(mem, loc + 1) << 8 | mem_get8(mem, loc + 2));
+			return mem_get8(mem, loc + 1) << 8 | mem_get8(mem, loc + 2);
 
 		case IO:
 			*madd = *madd + 1;
+			printf("IO, ");
 			return cpu->IO;
 
 		case MEMORY:
 			*madd = *madd + 5;
+			printf("MEMORY, ");
 			return mem_get8(mem, mem_get32(mem, loc + 1));
 
 		default:
-			*madd = 0;
+			*madd = 1;
+			printf("ERR:DEFAULT\n");
 			return 0;
 	}
 }
@@ -226,4 +236,9 @@ void set_register(farcpu *cpu, Register reg, u32int val)
 u32int process_extended_opcode(farcpu *cpu)
 {
 	return 0;
+}
+
+u32int cpu_do_div(u32int a, u32int b)
+{
+	return (u32int)(a/b);
 }

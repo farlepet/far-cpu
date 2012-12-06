@@ -6,9 +6,10 @@
  */
 
 #define USAGE "Usage:\n\
-    farcpu [mem_size]\n\
-        mem_size: size of the virtal CPU's RAM\n"
-int ver[3] = {0,0,1};
+   farcpu [mem_size]\n\
+      mem_size: size of the virtal CPU's RAM\n"
+		
+int ver[3] = {0,1,0};
 
 #include <stdio.h>
 #include <common.h>
@@ -16,12 +17,15 @@ int ver[3] = {0,0,1};
 #include <cpu.h>
 #include <math.h>
 
-char test_program[12] = 
+char test_program[] = 
 {
-	INC, AL, INC, AL, //Add 2 to AL, the long way
-	DEC, AB, DEC, AB, //Sub 2 from AB, the long way, will loob from 0 to 255 when subtracted
-	0,0,0,0
+	INC, AB, INC, AB, //Sub 2 from AB, the long way, will loob from 0 to 255 when subtracted
+	INC, BB,
+	DIV, NUMBER, 1, 0, NUMBER, 0, 4,//Add 2 to AL, the long way
+	INC, BB, INC, BB, INC, BB,
+
 };
+#define prgm_sz (sizeof(test_program) / sizeof(test_program[0]))
 
 int main(int argc, char *argv[])
 {
@@ -40,7 +44,10 @@ int main(int argc, char *argv[])
 	printf("\tMemory size: %.2f%c\n", smem, *type);
 	printf("Copying program to memory at 0x0\n");
 	int i;
-	for(i = 0; i < 12; i++)
+
+	if(cpu1.memory_size < prgm_sz){ printf("\nERR:NOT ENOUGH ALLOCATED CPU MEMORY TO RUN PROGRAM!!!\n\n"); return -2; }
+	
+	for(i = 0; i < prgm_sz; i++)
 	{
 		cpu1.memory[i] = test_program[i];
 		printf("%d:%d, ", test_program[i], cpu1.memory[i]);
@@ -48,13 +55,18 @@ int main(int argc, char *argv[])
 	//memcpy(cpu1.memory, test_program, 24);
 	printf("\nExecuting Test Program:\n");
 	
-	for(i = 0; i < 0x8; i++)
+	while(cpu1.regs.PC < prgm_sz)
 	{
-		printf("0x%X, ", mem_get8(cpu1.memory, cpu1.regs.PC));
+		printf("%lX:%s, ", cpu1.regs.PC, n_to_instruction[mem_get8(cpu1.memory, cpu1.regs.PC)]);
 		cpu1.regs.IR = mem_get8(cpu1.memory, cpu1.regs.PC);
 		process_opcode(&cpu1);
 	}
 	printf("\nAL:0x%lX BL:0x%lX AB:0x%X BB:0x%X\n", cpu1.regs.AL, cpu1.regs.BL, cpu1.regs.AB, cpu1.regs.BB);
+	printf("---------------------------------------------------------------\n");
+	for(i = 0; i < 32; i++)
+		printf("%X:%X ", i, cpu1.memory[i]);
+
+	printf("\n---------------------------------------------------------------\n");
 	return 0;
 }
 
