@@ -24,6 +24,8 @@ char test_program[] =
 	INC, BB,
 	DIV, NUMBER, 1, 0, NUMBER, 0, 4,//Add 2 to AL, the long way
 	INC, BB, INC, BB, INC, BB,
+	MOVRR, AL, BL,
+	MOVNM, 0, 255, 0, 0, 0, 0
 
 };
 #define prgm_sz (u32int)(sizeof(test_program) / sizeof(test_program[0]))
@@ -43,6 +45,8 @@ int main(int argc, char *argv[])
 	printf("\tMemory location: 0x%lX\n", (u32int)(cpu1.memory));
 	smem = makeSmall(cpu1.memory_size, type);
 	printf("\tMemory size: %.2f%c\n", smem, *type);
+	smem = makeSmall(prgm_sz, type);
+	printf("\tProgram Size: %.2f%c\n", smem, *type);
 	printf("Copying program to memory at 0x0\n");
 	u32int i;
 
@@ -59,15 +63,15 @@ int main(int argc, char *argv[])
 	while(cpu1.regs.PC < prgm_sz)
 	{
 		printf("%lX:%s, ", cpu1.regs.PC, n_to_instruction[mem_get8(cpu1.memory, cpu1.regs.PC)]);
-		cpu1.regs.IR = mem_get8(cpu1.memory, cpu1.regs.PC);
+		cpu1.regs.IR = mem_read8(cpu1.memory, cpu1.regs.PC);
 		process_opcode(&cpu1);
 	}
 	printf("\nAL:0x%lX BL:0x%lX AB:0x%X BB:0x%X\n", cpu1.regs.AL, cpu1.regs.BL, cpu1.regs.AB, cpu1.regs.BB);
-	printf("---------------------------------------------------------------\n");
+	printf("-------------------------------------------------------------------------------\n");
 	for(i = 0; i < 32; i++)
-		printf("%lX:%X ", i, cpu1.memory[i]);
+		printf("%lX:%X ", i, mem_read8(cpu1.memory, i));
 
-	printf("\n---------------------------------------------------------------\n");
+	printf("\n-------------------------------------------------------------------------------\n");
 	return 0;
 }
 

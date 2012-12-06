@@ -43,3 +43,11 @@ void mem_write16(char *mem, u32int loc, u16int in){ *(u16int *)(mem + loc) = in;
 void mem_write32(char *mem, u32int loc, u32int in){ *(u32int *)(mem + loc) = in; }
 void mem_write64(char *mem, u32int loc, u64int in){ *(u64int *)(mem + loc) = in; }
 
+u8int reg_sizes[16] = 
+{
+	1,1,1,1, //-|
+	2,2,2,2, // |-> General Purpose
+	4,4,4,4, //-|
+	
+	4,1,4,2
+};

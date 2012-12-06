@@ -49,14 +49,15 @@ typedef enum
 	MUL, //Same as ADD, but multiplication
 	DIV, //Same as ADD, but division
 	
-	MOVNM, //Move Number to Memory: byte(size of number: 0:byte 1:word 2:dword), (byte/word/dword), dword
-	MOVRM, //Move Register to Memory: Register, dword
-	MOVIM, //Move Input into Memory: dword
-	MOVMM, //Move Memory into Memory: dword, dword
+	MOVNM, //Move Number to Memory: byte(size of number: 0:byte 1:word 2:dword), (byte/word/dword), qword(memory loc)
+	MOVRM, //Move Register to Memory: Register, qword
+	MOVIM, //Move Input into Memory: qword
+	MOVMM, //Move Memory into Memory: qword, qword
 
-	MOVMR, //Move Memory into Register: dword, Register
+	MOVMR, //Move Memory into Register: qword, Register
 	MOVNR, //Move Number into Register: byte(size of number: 0:byte 1:word 2:dword), (byte/word/dword), Register
 	MOVIR, //Move Input into Register: Register
+	MOVRR, //Move Register[0] into Register[1]: Register, Register
 	
 	SHL, //Shifts left [1] [3] times: (INPUT, (depending on input)), (INPUT, (depending on input))
 	SHR, //Opposite of SHL

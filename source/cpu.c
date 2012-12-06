@@ -2,7 +2,9 @@
 
 const char *n_to_instruction[256] = 
 {
-	"NOP", "INC", "DEC", "ADD", "SUB", "MUL", "DIV"
+	"NOP", "INC", "DEC", "ADD", "SUB", "MUL", "DIV",
+	"MOVNM", "MOVRM", "MOVIM", "MOVMM",
+	"MOVMR", "MOVNR", "MOVIR", "MOVRR"
 };
 
 void cpu_reset(farcpu *cpu)
@@ -10,13 +12,13 @@ void cpu_reset(farcpu *cpu)
 	//memset((cpu->memory), 0, cpu->memory_size);
 	memset(&(cpu->regs), 0, sizeof(registers));
 	cpu->IO = 0;
-	cpu->inOut = false;
+	cpu->inOut = false; //true means IN
 	cpu->overflow = 0;
 }
 
 int init_cpu(farcpu *cpu, u32int mem_size)
 {
-	char *tcpum = malloc(1); //XXX: HACK to get rid of nasty warning message
+	char *tcpum = malloc(1); //XXX: HACK to get rid of little warning message
 	setup_memory(tcpum, mem_size);
 	cpu_reset(cpu);
 	cpu->memory = tcpum;
@@ -38,7 +40,10 @@ u32int process_opcode(farcpu *cpu)
 		case NOP:
 			asm("nop"); break; //might just remove the asm statement sometime, just fo-sho right now
 
-		//Arithmatic:
+		/*
+		 * Aritmatic functions
+		 * TODO: OVERFLOW, EXCEPTION Handeling
+		 */
 		case INC:
 			set_register(cpu, mem_get8(memory, PC), get_register(cpu, mem_get8(memory, PC)) + 1); mem_add++; break;
 
@@ -54,17 +59,28 @@ u32int process_opcode(farcpu *cpu)
 		case MUL: //TODO:OPTIMIZE
 			set_register(cpu, AL, process_in_loc(cpu, memory, PC, &mem_add) * process_in_loc(cpu, memory, PC + mem_add-1, &mem_add)); break;
 
-		case DIV: //TODO:FLOATING POINT EXCEPTION FIX
+		case DIV: //TODO:OPTIMIZE, DIV BY 0
 			set_register(cpu, AL, (u32int)(process_in_loc(cpu, memory, PC, &mem_add) / process_in_loc(cpu, memory, PC + mem_add-1, &mem_add))); break;
 
 		//Moving data around:     TODO:ADD CONTENT!!!
 		case MOVNM:
+			switch(mem_get8(cpu->memory, PC)){
+				case 0: mem_write8(cpu->memory, mem_read32(cpu->memory, PC + 2),mem_read8(cpu->memory, PC + 1)); mem_add+=6; break;
+				case 1: mem_write16(cpu->memory, mem_read32(cpu->memory, PC + 3), mem_read16(cpu->memory, PC + 1)); mem_add+=7; break;
+				case 2: mem_write32(cpu->memory, mem_read32(cpu->memory, PC + 5), mem_read32(cpu->memory, PC + 1)); mem_add+=9; break; }
 			break;
 
 		case MOVRM:
+			switch(reg_sizes[mem_read8(cpu->memory, PC)]){
+				case 1: mem_write8(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); break;
+				case 2: mem_write16(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); break;
+				case 4: mem_write32(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); break;
+			}
+			mem_add += 5;
 			break;
 
 		case MOVIM:
+			mem_write8(cpu->memory, mem_read32(cpu->memory, PC), cpu->IO); mem_add += 4;
 			break;
 
 		case MOVMM:
@@ -77,6 +93,10 @@ u32int process_opcode(farcpu *cpu)
 			break;
 
 		case MOVIR:
+			break;
+
+		case MOVRR:
+			set_register(cpu, mem_read8(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); mem_add += 2;
 			break;
 
 		//bit-minipulating:
@@ -104,6 +124,7 @@ u32int process_opcode(farcpu *cpu)
 
 		//branching:
 		case JMP:
+			cpu->regs.PC = mem_read32(cpu->memory, PC);
 			break;
 
 		case JZ:

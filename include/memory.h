@@ -42,8 +42,11 @@ typedef enum
 
 	PC,
 	IR,
-	SP
+	SP,
+	CSP
 } Register;
+
+u8int reg_sizes[16];
 
 typedef enum
 {
