@@ -2,7 +2,7 @@
 SRC_FILTER = .c
 LIBS  = -lm
 LIBS += 
-CFLAGS = -Wall -O3 -ffast-math -I./include/
+CFLAGS = -Wall -Wextra -Os -ffast-math -I./include/
 LDFLAGS =
 CONF = .
 SOURCES :=  $(shell find ./ -type f -name '*${SRC_FILTER}')
