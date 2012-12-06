@@ -20,12 +20,13 @@ int ver[3] = {0,1,0};
 char test_program[] = 
 {
 	INC, AB, INC, AB, //Sub 2 from AB, the long way, will loob from 0 to 255 when subtracted
+	DEC, BL,
 	INC, BB,
 	DIV, NUMBER, 1, 0, NUMBER, 0, 4,//Add 2 to AL, the long way
 	INC, BB, INC, BB, INC, BB,
 
 };
-#define prgm_sz (sizeof(test_program) / sizeof(test_program[0]))
+#define prgm_sz (u32int)(sizeof(test_program) / sizeof(test_program[0]))
 
 int main(int argc, char *argv[])
 {
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
 	smem = makeSmall(cpu1.memory_size, type);
 	printf("\tMemory size: %.2f%c\n", smem, *type);
 	printf("Copying program to memory at 0x0\n");
-	int i;
+	u32int i;
 
 	if(cpu1.memory_size < prgm_sz){ printf("\nERR:NOT ENOUGH ALLOCATED CPU MEMORY TO RUN PROGRAM!!!\n\n"); return -2; }
 	
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
 	printf("\nAL:0x%lX BL:0x%lX AB:0x%X BB:0x%X\n", cpu1.regs.AL, cpu1.regs.BL, cpu1.regs.AB, cpu1.regs.BB);
 	printf("---------------------------------------------------------------\n");
 	for(i = 0; i < 32; i++)
-		printf("%X:%X ", i, cpu1.memory[i]);
+		printf("%lX:%X ", i, cpu1.memory[i]);
 
 	printf("\n---------------------------------------------------------------\n");
 	return 0;
