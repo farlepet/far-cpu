@@ -58,7 +58,8 @@ int main(int argc, char *argv[])
 				case 4: D("SUB\n"); WR(4); char *op1 = strtok(NULL, " "); char *op2 = strtok(NULL, " "); write_ASMD(op1); write_ASMD(op2); break; //SUB
 				case 5: D("MUL\n"); WR(5); char *op1 = strtok(NULL, " "); char *op2 = strtok(NULL, " "); write_ASMD(op1); write_ASMD(op2); break; //MUL
 				case 6: D("DIV\n"); WR(6); char *op1 = strtok(NULL, " "); char *op2 = strtok(NULL, " "); write_ASMD(op1); write_ASMD(op2); break; //DIV
-					
+				
+				case 7: D("MOVNM\n"); WR(7); char *op1 = strtok(NULL, " "); write_mov_n(op);
 				
 				default: D("WARN:%s NOT IMPLEMENTED YET!\n", strtok(str, " "));
 			}
@@ -198,4 +199,37 @@ int write_ASMD(char *str)
 	}
 	D("ERR:ADD/SUB/MUL/DIV ERROR: %s CANNOT BE CONERTED\n", str);
 	exit(0);
+}
+
+u8int get_num_size(char *str)
+{
+	if(*str == '1') if(*(str+1) == '$' || *(str+1) == '%') return 0;
+		
+	if(*str == '2') if(*(str+1) == '$' || *(str+1) == '%') return 1;
+		
+	if(*str == '4') if(*(str+1) == '$' || *(str+1) == '%') return 2;
+}
+
+void write_mov_n(char *str)
+{
+	u8int tmp = get_num_size(str);
+	WR(tmp);
+	u32int n;
+	if(*str == '$') n = strtol(str+1, NULL, 10);
+	if(*str == '%') n = strtol(str+1, NULL, 16);
+	if(tmp == 2)
+	{
+		WR((int)(addr&0xFF000000)>>23);
+		WR((int)(addr&0xFF0000)>>15);
+		WR((int)(addr&0xFF00)>>7);
+		WR((int)(addr&0xFF));
+	}
+	
+	if(tmp == 1)
+	{
+		WR((int)(addr&0xFF00)>>7);
+		WR((int)(addr&0xFF));
+	}
+	
+	if(tmp == 0) WR((int)(addr&0xFF));
 }
