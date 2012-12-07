@@ -49,12 +49,16 @@ int main(int argc, char *argv[])
 		{
 			switch(getOpcode(str))
 			{
-				case 0: D("NOP\n"); WR(0); break;                                                                    //NOP
+				case 0: D("NOP\n"); WR(0); break;                                                                                                 //NOP
 				
-				case 1: D("INC\n"); WR(1); WR(getRegister(strtok(NULL, " "))); break;                                //INC
-				case 2: D("DEC\n"); WR(2); WR(getRegister(strtok(NULL, " "))); break;                                //DEC
+				case 1: D("INC\n"); WR(1); WR(getRegister(strtok(NULL, " "))); break;                                                             //INC
+				case 2: D("DEC\n"); WR(2); WR(getRegister(strtok(NULL, " "))); break;                                                             //DEC
 				
-				case 3: D("ADD\n"); WR(3); write_ASMD(strtok(NULL, " ")); write_ASMD(strtok(NULL, " ")); break;      //ADD
+				case 3: D("ADD\n"); WR(3); char *op1 = strtok(NULL, " "); char *op2 = strtok(NULL, " "); write_ASMD(op1); write_ASMD(op2); break; //ADD
+				case 4: D("SUB\n"); WR(4); char *op1 = strtok(NULL, " "); char *op2 = strtok(NULL, " "); write_ASMD(op1); write_ASMD(op2); break; //SUB
+				case 5: D("MUL\n"); WR(5); char *op1 = strtok(NULL, " "); char *op2 = strtok(NULL, " "); write_ASMD(op1); write_ASMD(op2); break; //MUL
+				case 6: D("DIV\n"); WR(6); char *op1 = strtok(NULL, " "); char *op2 = strtok(NULL, " "); write_ASMD(op1); write_ASMD(op2); break; //DIV
+					
 				
 				default: D("WARN:%s NOT IMPLEMENTED YET!\n", strtok(str, " "));
 			}
@@ -133,7 +137,9 @@ typedef enum
 int write_ASMD(char *str)
 {
 	D("ASMD:%s\n", str);
-	char *tmp = strtok(str, " ");
+	char *t = malloc(15);
+	strcpy(t, str);
+	char *tmp = strtok(t, " ");
 	if(*tmp == '&')//dec mem addr
 	{
 		u32int addr = strtol(str+1, NULL, 10);
