@@ -1,11 +1,37 @@
 #test1.fcasm
 #designed to be close to real asm
 
-INC AB
-INC AB
+#registers:
+# [ABCD]B - Registers with the size of 1 byte
+# [ABCD]S - Registers with the size of 1 short/word
+# [ABCD]L - Registers with the size of 1 long word/short
+# PC - location of current instruction
+# IR - current instruction (not entirely useful for programming with, as you would already know what instruction you are using, but ill add another instruction register for interrupts later)
+# SP - stack pointer/loactionof the stack - not a whole lot of use yet im afraid...
+# CSP - curent stack position relative to SP
+
+
+INC AB #increment AB by 1
+INC AB #increment AB by 1
+#AB should now be 2
+
+DEC BB #decrement BB by 1
+#BB should now be FF
+
+DEC DL #decrement DL by 1
+#DL should now be FFFFFFFF
+
+MOVNR 1%A3 CB #move 1 byte number 0xA3 to register CB
+
+MOVRM CB @20 #move contents of register CB to memory address 0x10(16)
+
+MOVNR 1$53 BS #move number 53 into register BS
+
 
 ADD $32 $54 #add 32 and 54 into AL
 
 MOVRR AL BL #move (copy) value of AL into BL
 
 MOVRR BL CL #move (copy) value of AL into BL
+
+####

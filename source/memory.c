@@ -59,4 +59,4 @@ char *reg_strs[16] =
 	"AL", "BL", "CL", "DL",
 
 	"PC", "IR", "SP", "CSP"
-}
+};

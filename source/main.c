@@ -6,8 +6,10 @@
  */
 
 #define USAGE "Usage:\n\
-   farcpu [mem_size]\n\
-      mem_size: size of the virtal CPU's RAM\n"
+   farcpu [mem_size] <program>\n\
+      mem_size: size of the virtal CPU's RAM\n\
+	  program: assembled farcpu program file\n\
+   ex: farcpu 64 test1.o\n"
 		
 int ver[3] = {0,1,0};
 
@@ -38,7 +40,7 @@ int main(int argc, char *argv[])
 	printf("far-cpu v%d.%d.%d\n", ver[0], ver[1], ver[2]);
 	if(argc < 2){ printf(USAGE); return -1; }
 
-	double smem; char *type = malloc(1);
+	double smem; char *type = malloc(1); u32int numbytes = 0;
 	
 	
 	printf("initilizing cpu 1...\n");
@@ -47,23 +49,37 @@ int main(int argc, char *argv[])
 	smem = makeSmall(cpu1.memory_size, type);
 	printf("\tMemory size: %.2f%c\n", smem, *type);
 	smem = makeSmall(prgm_sz, type);
-	printf("\tProgram Size: %.2f%c\n", smem, *type);
-	printf("Copying program to memory at 0x0\n");
+	printf("\tSystem ROM Size: %.2f%c\n", smem, *type);
 	u32int i;
-
-	if(cpu1.memory_size < prgm_sz){ printf("\nERR:NOT ENOUGH ALLOCATED CPU MEMORY TO RUN PROGRAM!!!\n\n"); return -2; }
+	printf("argc:%d", argc);
 	
-	for(i = 0; i < prgm_sz; i++)
+	if(argc > 2)
 	{
-		cpu1.memory[i] = test_program[i];
-		printf("%d:%d, ", test_program[i], cpu1.memory[i]);
+		FILE *f;
+		if((f = fopen(argv[2], "r")) == NULL) {	printf("ERR:FILE %s COULD NOT BE OPENED!\n", argv[2]); return -1;	}
+		fseek(f, 0L, SEEK_END);
+		numbytes = ftell(f);
+		fseek(f, 0L, SEEK_SET);	
+		smem = makeSmall(numbytes, type);
+		if(cpu1.memory_size <  numbytes){ printf("\nERR:NOT ENOUGH ALLOCATED CPU MEMORY TO RUN PROGRAM!!! NEEDS %lf%c\n\n", smem, *type); return -3; }
+		fread(cpu1.memory, 1, numbytes, f);
+		fclose(f);
+	}
+	else {
+		if(cpu1.memory_size < prgm_sz){ printf("\nERR:NOT ENOUGH ALLOCATED CPU MEMORY TO RUN PROGRAM!!!\n\n"); return -2; } 
+		for(i = 0; i < prgm_sz; i++)
+		{
+			
+			cpu1.memory[i] = test_program[i];
+			printf("%d:%d, ", test_program[i], cpu1.memory[i]);
+		}
 	}
 	//memcpy(cpu1.memory, test_program, 24);
-	printf("\nExecuting Test Program:\n");
+	printf("\nExecuting Program:\n");
 	
-	while(cpu1.regs.PC < prgm_sz)
+	while(cpu1.regs.PC < (argc < 3) ? prgm_sz : numbytes)
 	{
-		printf("%lX:%s, ", cpu1.regs.PC, n_to_instruction[mem_get8(cpu1.memory, cpu1.regs.PC)]);
+		printf("%lX:%s, ", cpu1.regs.PC, n_to_instruction[mem_get8(cpu1.memory, cpu1.regs.PC)]);fflush(stdout);
 		cpu1.regs.IR = mem_read8(cpu1.memory, cpu1.regs.PC);
 		process_opcode(&cpu1);
 	}
