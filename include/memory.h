@@ -46,6 +46,8 @@ typedef enum
 	CSP
 } Register;
 
+char *reg_strs[16];
+
 u8int reg_sizes[16];
 
 typedef enum

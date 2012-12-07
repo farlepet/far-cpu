@@ -51,3 +51,12 @@ u8int reg_sizes[16] =
 	
 	4,1,4,2
 };
+
+char *reg_strs[16] = 
+{
+	"AB", "BB", "CB", "DB",
+	"AS", "BS", "CS", "DS",
+	"AL", "BL", "CL", "DL",
+
+	"PC", "IR", "SP", "CSP"
+}

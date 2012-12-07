@@ -4,7 +4,12 @@ const char *n_to_instruction[256] =
 {
 	"NOP", "INC", "DEC", "ADD", "SUB", "MUL", "DIV",
 	"MOVNM", "MOVRM", "MOVIM", "MOVMM",
-	"MOVMR", "MOVNR", "MOVIR", "MOVRR"
+	"MOVMR", "MOVNR", "MOVIR", "MOVRR",
+	"SHL", "SHR", "AND", "OR", "XOR", "NOT",
+	"HWU", "JMP",
+	"JZ", "JNZ", "JFE", "JNE",
+	"JGT", "JNG", "JGE", "JNGE",
+	"JLT", "JNL", "JLE", "JNLE"
 };
 
 void cpu_reset(farcpu *cpu)

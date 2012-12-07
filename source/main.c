@@ -15,6 +15,7 @@ int ver[3] = {0,1,0};
 #include <common.h>
 #include <memory.h>
 #include <cpu.h>
+#include <gfx.h>
 #include <math.h>
 
 char test_program[] = 

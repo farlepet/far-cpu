@@ -1,0 +1,9 @@
+#test1.fcasm
+#designed to be close to real asm
+
+INC AB
+INC AB
+
+ADD $32 $54 #add 32 and 54 into AL
+
+MOVRR AL BL #move (copy) value of AL into BL
