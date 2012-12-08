@@ -23,7 +23,9 @@ DEC DL #decrement DL by 1
 
 MOVNR 1%A3 CB #move 1 byte number 0xA3 to register CB
 
-MOVRM CB @20 #move contents of register CB to memory address 0x10(16)
+#MOVNM 2%F00F @FF
+
+MOVRM CB &24 #move contents of register CB to memory address
 
 MOVNR 1$53 BS #move number 53 into register BS
 
@@ -33,5 +35,7 @@ ADD $32 $54 #add 32 and 54 into AL
 MOVRR AL BL #move (copy) value of AL into BL
 
 MOVRR BL CL #move (copy) value of AL into BL
+
+RET
 
 ####

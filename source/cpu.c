@@ -9,7 +9,8 @@ const char *n_to_instruction[256] =
 	"HWU", "JMP",
 	"JZ", "JNZ", "JFE", "JNE",
 	"JGT", "JNG", "JGE", "JNGE",
-	"JLT", "JNL", "JLE", "JNLE"
+	"JLT", "JNL", "JLE", "JNLE",
+	"RET"
 };
 
 void cpu_reset(farcpu *cpu)
@@ -69,7 +70,7 @@ u32int process_opcode(farcpu *cpu)
 
 		//Moving data around:     TODO:ADD CONTENT!!!
 		case MOVNM:
-			switch(mem_get8(cpu->memory, PC)){
+			switch(mem_read8(cpu->memory, PC)){ 
 				case 0: mem_write8(cpu->memory, mem_read32(cpu->memory, PC + 2),mem_read8(cpu->memory, PC + 1)); mem_add+=6; break;
 				case 1: mem_write16(cpu->memory, mem_read32(cpu->memory, PC + 3), mem_read16(cpu->memory, PC + 1)); mem_add+=7; break;
 				case 2: mem_write32(cpu->memory, mem_read32(cpu->memory, PC + 5), mem_read32(cpu->memory, PC + 1)); mem_add+=9; break; }
@@ -77,7 +78,7 @@ u32int process_opcode(farcpu *cpu)
 
 		case MOVRM:
 			switch(reg_sizes[mem_read8(cpu->memory, PC)]){
-				case 1: mem_write8(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); break;
+				case 1: mem_write8(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); D("LLL\n");FLS(); break;
 				case 2: mem_write16(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); break;
 				case 4: mem_write32(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); break;
 			}
@@ -95,9 +96,15 @@ u32int process_opcode(farcpu *cpu)
 			break;
 
 		case MOVNR:
+			switch(mem_read8(cpu->memory, PC)) {
+				case 0: set_register(cpu, mem_read8(cpu->memory, PC+2), mem_read8(cpu->memory, PC+1)); mem_add += 3; break; //byte
+				case 1: set_register(cpu, mem_read8(cpu->memory, PC+3), mem_read16(cpu->memory, PC+1)); mem_add += 4; break; //short
+				case 2: set_register(cpu, mem_read8(cpu->memory, PC+5), mem_read32(cpu->memory, PC+1)); mem_add += 6; break; //long
+			}
 			break;
 
 		case MOVIR:
+			set_register(cpu, mem_read8(cpu->memory, PC), cpu->IO); mem_add += 1;
 			break;
 
 		case MOVRR:
@@ -166,6 +173,10 @@ u32int process_opcode(farcpu *cpu)
 			break;
 
 		case JNLE:
+			break;
+
+
+		case RET:
 			break;
 
 	}

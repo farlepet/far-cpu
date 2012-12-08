@@ -87,6 +87,7 @@ typedef enum
 	JNLE, //Jump only if AL !<= BL
 
 
+	RET, //Return with value of AL
 
 	EXOP = 255 //if this requires an extra byte, so this CPU allows up to 512 opcodes, this probably wont be used for quite some time........
 } cpu_opcode;

@@ -7,6 +7,15 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#define DEBUG
+
+#ifdef DEBUG
+#define D printf
+#define FLS() fflush(stdout)
+#else
+#define D(str, ...)
+#endif
+
 typedef unsigned char      u8int;
 typedef unsigned short     u16int;
 typedef unsigned long      u32int;

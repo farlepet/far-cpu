@@ -23,7 +23,7 @@ int write_ASMD(char *str);
 void write_mov_n(char *str);
 #define WR(val) fprintf(output, "%c", val)
 #define WR16(val) fprintf(output, "%c%c", (val&0xFF00)>>7, val&0xFF)
-#define WR32(val) fprintf(output, "%c%c%c%c", (u8int)((val&0xFF000000)>>23), (u8int)((val&0xFF0000)>>15), (u8int)((val&0xFF00)>>7), (u8int)(val&0xFF))
+#define WR32(val) fprintf(output, "%c%c%c%c", (u8int)((val&0xFF)), (u8int)((val&0xFF00)>>7), (u8int)((val&0xFF0000)>>15), (u8int)((val&0xFF000000)>>23))
 #define D printf
 
 FILE *input, *output;
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	if((output = fopen(argv[2], "w+")) == NULL)
 	{	printf("ERR:FILE %s COULD NOT BE OPENED!\n", argv[2]); return -2;	}
 		
-	char str[128]; u32int i;
+	char *str = malloc(1024); u32int i;
 	D("starting assemble...\n");
 	while(fscanf(input, "%[^\n]\n", str) != EOF)
 	{
@@ -83,7 +83,13 @@ int main(int argc, char *argv[])
 				
 				case 14: D("MOVRR\n"); WR(14); op1 = strtok(NULL, " "); op2 = strtok(NULL, " "); WR(getRegister(op1)); WR(getRegister(op2)); break;
 				
-				default: D("WARN:%s NOT IMPLEMENTED YET!\n", strtok(str, " ")); break;
+				
+				
+				
+				
+				case 35: D("RET\n"); WR(35); break;
+				
+				default: D("WARN:%s(%d) NOT IMPLEMENTED YET!\n", strtok(str, " "), getOpcode(str)); break;
 			}
 		}
 		else D("#commented line\n");
@@ -110,7 +116,8 @@ const char *n_to_instruction[] =
 	"HWU", "JMP",
 	"JZ", "JNZ", "JFE", "JNE",
 	"JGT", "JNG", "JGE", "JNGE",
-	"JLT", "JNL", "JLE", "JNLE"
+	"JLT", "JNL", "JLE", "JNLE",
+	"RET"
 };
 
 #define nins (sizeof(n_to_instruction) / sizeof(n_to_instruction[0]))
