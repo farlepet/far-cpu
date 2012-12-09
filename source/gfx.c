@@ -38,6 +38,8 @@ void UpdateScreen(SDL_Surface* screen)
 int gfx_upd(farcpu *cpu)
 {
 	UpdateScreen(sdl_screen);
+	if(cpu->IO == 0x01)//screen clear
+		memset(cpu->memory + CMEMLOC, 0, CMEMSZ);
 	int x, y;
 	for(y = 0; y < CHEIGHT; y++)
 		for(x = 0; x < CWIDTH; x++)

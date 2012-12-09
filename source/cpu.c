@@ -11,6 +11,7 @@ const char *n_to_instruction[256] =
 	"JGT", "JNG", "JGE", "JNGE",
 	"JLT", "JNL", "JLE", "JNLE",
 	"MOVNRM", "MOVRRM", "MOVIRM", "MOVMRM",
+	"OUTN", "OUTR", "OUTM",
 	"RET"
 };
 
@@ -192,13 +193,18 @@ u32int process_opcode(farcpu *cpu)
 
 
 		case MOVNRM:
+			switch(mem_read8(cpu->memory, PC)) {
+				case 0: set_register(cpu, get_register(cpu, mem_get8(cpu->memory, PC + 2)), mem_read8(cpu->memory, PC+1)); mem_add += 4; break; //byte
+				case 1: set_register(cpu, get_register(cpu, mem_get8(cpu->memory, PC + 3)), mem_read16(cpu->memory, PC+1)); mem_add += 5; break; //short
+				case 2: set_register(cpu, get_register(cpu, mem_get8(cpu->memory, PC + 5)), mem_read32(cpu->memory, PC+1)); mem_add += 7; break; //long
+			}
 			break;
 
 		case MOVRRM:
 			switch(reg_sizes[mem_read8(cpu->memory, PC)]){
-				case 1: mem_write8(cpu->memory, get_register(cpu, mem_get8(cpu->memory, PC + 2)), get_register(cpu, mem_read8(cpu->memory, PC+1))); break;
-				case 2: mem_write16(cpu->memory, get_register(cpu, mem_get8(cpu->memory, PC + 2)), get_register(cpu, mem_read8(cpu->memory, PC+1))); break;
-				case 4: mem_write32(cpu->memory, get_register(cpu, mem_get8(cpu->memory, PC + 2)), get_register(cpu, mem_read8(cpu->memory, PC+1))); break;
+				case 1: mem_write8(cpu->memory, get_register(cpu, mem_get8(cpu->memory, PC + 1)), get_register(cpu, mem_read8(cpu->memory, PC))); break;
+				case 2: mem_write16(cpu->memory, get_register(cpu, mem_get8(cpu->memory, PC + 1)), get_register(cpu, mem_read8(cpu->memory, PC))); break;
+				case 4: mem_write32(cpu->memory, get_register(cpu, mem_get8(cpu->memory, PC + 1)), get_register(cpu, mem_read8(cpu->memory, PC))); break;
 			} mem_add += 2;
 			break;
 
@@ -208,6 +214,20 @@ u32int process_opcode(farcpu *cpu)
 		case MOVMRM:
 			break;
 
+
+			
+		case OUTN:
+			D("G");
+			cpu->IO = mem_read8(cpu->memory, PC); D("Y"); mem_add += 1; D("H");
+			break;
+
+		case OUTR:
+			cpu->IO = get_register(cpu, mem_read8(cpu->memory, PC)); mem_add += 1;
+			break;
+
+		case OUTM:
+			cpu->IO = mem_read8(cpu->memory, mem_read32(cpu->memory, PC)); mem_add += 4;
+			break;
 
 		case RET:
 			break;

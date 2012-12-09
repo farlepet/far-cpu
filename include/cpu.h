@@ -86,6 +86,9 @@ typedef enum
 	MOVIRM, //Move IO to register pointing to memory: Register
 	MOVMRM, //Move memory contents to register pointing to memory: long, Register
 
+	OUTN, //Push number to IO: byte
+	OUTR, //Push register to IO: Register
+	OUTM, //Push value at memory location to IO: long
 
 	RET, //Return with value of AL
 

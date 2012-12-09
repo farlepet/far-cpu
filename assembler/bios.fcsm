@@ -1,20 +1,18 @@
 #bios.fcsm
 #the BIOS for the farcpu system
+#made to be fairly fast
 
-MOVNR 2$256 AL
-MOVNR 2$280 BL
-MOVNR 1$0   AB 
-SJP @14
-INC AL
-MOVRRM AB AL
-JNE
+OUTN $1 #"clear screen" for gpu
+HWU $8  #update gpu, causing "clear screen"
+OUTN $0 #clear output back to 0
 
-MOVNM 1$102 @100 #f
-MOVNM 1$97 @101 #a
-MOVNM 1$114 @102 #r
-MOVNM 1$99 @103 #c
-MOVNM 1$112 @104 #p
-MOVNM 1$117 @105 #u
+#write some text at the top
+MOVNM 1%66 @100 #f
+MOVNM 1%61 @101 #a
+MOVNM 1%72 @102 #r
+MOVNM 1%63 @103 #c
+MOVNM 1%70 @104 #p
+MOVNM 1%75 @105 #u
 
 HWU $8
 

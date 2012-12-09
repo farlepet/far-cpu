@@ -106,9 +106,13 @@ int main(int argc, char *argv[])
 				case 34: D("JLE\n"); WR(34); break;
 				case 35: D("JNLE\n"); WR(35); break;
 				
+				case 36: D("MOVNRM\n"); WR(36); op1 = strtok(NULL, " "); op2 = strtok(NULL, " "); write_mov_n(op1); WR(getRegister(op2)); break;
+				
 				case 37: D("MOVRRM\n"); WR(37); op1 = strtok(NULL, " "); op2 = strtok(NULL, " "); WR(getRegister(op1)); WR(getRegister(op2)); break;
 				
-				case 40: D("RET\n"); WR(40); break;
+				case 40: D("OUTN\n"); WR(40); op1 = strtok(NULL, " "); if(*op1=='$')WR((u8int)strtol(op1+1, NULL, 10)); else if(*op1=='%')WR((u8int)strtol(op1+1, NULL, 16)); else { D("ERR:UNKNOWN NUMBER TYPE %c\n", *op1); exit(0); } break;
+				
+				case 43: D("RET\n"); WR(43); break;
 				
 				default: D("WARN:%s(%d) NOT IMPLEMENTED YET!\n", strtok(str, " "), getOpcode(str)); break;
 			}
@@ -139,6 +143,7 @@ const char *n_to_instruction[] =
 	"JGT", "JNG", "JGE", "JNGE",
 	"JLT", "JNL", "JLE", "JNLE",
 	"MOVNRM", "MOVRRM", "MOVIRM", "MOVMRM",
+	"OUTN", "OUTR", "OUTM",
 	"RET"
 };
 
