@@ -37,13 +37,15 @@ void UpdateScreen(SDL_Surface* screen)
 
 int gfx_upd(farcpu *cpu)
 {
-	UpdateScreen(sdl_screen);
+	
 	if(cpu->IO == 0x01)//screen clear
 		memset(cpu->memory + CMEMLOC, 0, CMEMSZ);
 	int x, y;
 	for(y = 0; y < CHEIGHT; y++)
 		for(x = 0; x < CWIDTH; x++)
 			drawChar(mem_read8(cpu->memory, CMEMLOC + x + y * CWIDTH), x * 8, y * 8, 0xFFFFFF);
+
+	UpdateScreen(sdl_screen);
 			                   
 	return 0;
 }
@@ -51,12 +53,13 @@ int gfx_upd(farcpu *cpu)
 
 int init_gfx()
 {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0 ) return 1;
+    if (SDL_Init(SDL_INIT_VIDEO) < 0 ){ D("\nUnable to initilize SDL...\n\n"); exit(1); }
    
     if (!(sdl_screen = SDL_SetVideoMode(WIDTH, HEIGHT, DEPTH, SDL_HWSURFACE)))
     {
         SDL_Quit();
-        return 1;
+		D("\nUnable to initilize SDL screen...\n\n");
+        exit(1);
     }
 	/*
     while(!keypress) 

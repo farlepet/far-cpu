@@ -26,8 +26,7 @@ void cpu_reset(farcpu *cpu)
 
 int init_cpu(farcpu *cpu, u32int mem_size)
 {
-	char *tcpum = malloc(1); //XXX: HACK to get rid of little warning message
-	setup_memory(tcpum, mem_size);
+	u32int tcpum = setup_memory(mem_size);
 	cpu_reset(cpu);
 	cpu->memory = tcpum;
 	cpu->memory_size = mem_size;

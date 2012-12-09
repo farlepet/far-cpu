@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 	smem = makeSmall(prgm_sz, type);
 	printf("\tSystem ROM Size: %.2f%c\n", smem, *type);
 	u32int i;
+	D("opening file\n");FLS();
 	
 	if(argc > 2)
 	{
@@ -64,9 +65,12 @@ int main(int argc, char *argv[])
 		fseek(f, 0L, SEEK_SET);	
 		smem = makeSmall(numbytes, type);
 		if(cpu1.memory_size <  numbytes){ printf("\nERR:NOT ENOUGH ALLOCATED CPU MEMORY TO RUN PROGRAM!!! NEEDS %lf%c\n\n", smem, *type); return -3; }
+		D("copying\n");FLS();
 		fread(cpu1.memory, 1, numbytes, f);
+		D("copied\n");FLS();
 		fclose(f);
 	}
+	
 	else {
 		if(cpu1.memory_size < prgm_sz){ printf("\nERR:NOT ENOUGH ALLOCATED CPU MEMORY TO RUN PROGRAM!!!\n\n"); return -2; } 
 		for(i = 0; i < prgm_sz; i++)

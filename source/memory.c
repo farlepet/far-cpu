@@ -6,13 +6,16 @@ u32int memory_allocations[MAX_MEM_ALLOCS];
 
 int n_allocs;
 
-int setup_memory(char *mem, u32int size)
+int setup_memory(u32int size)
 {
 	if(n_allocs >= MAX_MEM_ALLOCS) return -1;
+	char *mem;
 	mem = (char *)malloc(size);
+	if(mem == 0){ D("MEMORY ERROR at %s:%d", __FILE__, __LINE__); exit(4); }
+	D("MEMORY LOCATION: 0x%lX\n", (u32int)mem);
 	memset(mem, 0, size);
 	memory_allocations[n_allocs++] = (u32int)mem;
-	return n_allocs-1;
+	return mem;
 }
 
 void remove_memory(int mem)

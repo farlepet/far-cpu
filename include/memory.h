@@ -17,7 +17,7 @@ typedef enum
 	MEMORY
 } input_location;
 
-int setup_memory(char *mem, u32int size);
+int setup_memory(u32int size);
 
 void remove_memory(int mem);
 

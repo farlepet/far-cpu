@@ -3,7 +3,7 @@
 #made to be fairly fast
 
 OUTN $1 #"clear screen" for gpu
-HWU $8  #update gpu, causing "clear screen"
+#HWU $8  #update gpu, causing "clear screen"
 OUTN $0 #clear output back to 0
 
 #write some text at the top
