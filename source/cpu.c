@@ -6,7 +6,7 @@ const char *n_to_instruction[256] =
 	"MOVNM", "MOVRM", "MOVIM", "MOVMM",
 	"MOVMR", "MOVNR", "MOVIR", "MOVRR",
 	"SHL", "SHR", "AND", "OR", "XOR", "NOT",
-	"HWU", "JMP",
+	"HWU", "JMP", "SJP",
 	"JZ", "JNZ", "JFE", "JNE",
 	"JGT", "JNG", "JGE", "JNGE",
 	"JLT", "JNL", "JLE", "JNLE",
@@ -136,43 +136,50 @@ u32int process_opcode(farcpu *cpu)
 
 		//branching:
 		case JMP:
-			cpu->regs.PC = mem_read32(cpu->memory, PC);
-			break;
+			cpu->regs.PC = mem_read32(cpu->memory, PC); return 1;
 
+		case SJP:
+			cpu->regs.JP = mem_read32(cpu->memory, PC); mem_add += 4; break;
+			
+			
 		case JZ:
-			break;
+			if(cpu->regs.AL == 0){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 
 		case JNZ:
-			break;
+			if(cpu->regs.AL != 0){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 
 		case JFE:
-			break;
+			if(cpu->regs.AL == cpu->regs.BL){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 
 		case JNE:
-			break;
+			if(cpu->regs.AL != cpu->regs.BL){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 
 		case JGT:
+			if(cpu->regs.AL > cpu->regs.BL){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 			break;
 
 		case JNG:
-			break;
+			if(!(cpu->regs.AL > cpu->regs.BL)){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 
 		case JGE:
-			break;
+			if(cpu->regs.AL >= cpu->regs.BL){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 
 		case JNGE:
-			break;
+			if(!(cpu->regs.AL >= cpu->regs.BL)){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 
 		case JLT:
-			break;
+			if(cpu->regs.AL < cpu->regs.BL){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 
 		case JNL:
+			if(!(cpu->regs.AL < cpu->regs.BL)){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 			break;
 
 		case JLE:
+			if(cpu->regs.AL <= cpu->regs.BL){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 			break;
 
 		case JNLE:
+			if(!(cpu->regs.AL <= cpu->regs.BL)){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
 			break;
 
 

@@ -59,7 +59,7 @@ typedef enum
 	MOVIR, //Move Input into Register: Register
 	MOVRR, //Move Register[0] into Register[1]: Register, Register
 	
-	SHL, //Shifts left [1] [3] times: (INPUT, (depending on input)), (INPUT, (depending on input))
+	SHL, //Shifts left [1,2] [3] times and stores into AL: (INPUT, (depending on input)), byte
 	SHR, //Opposite of SHL
 	AND, //AND and store into AL: (INPUT, (depending on input))*2
 	OR,  //Similar to AND
@@ -69,6 +69,8 @@ typedef enum
 	HWU, //Hardware update: word(not byte, for future expansion capabilities)
 
 	JMP, //Jump to specified point in program: dword
+
+	SJP, //Set Jump Point - used for the following J*** comparisons: long
 	
 	JZ,  //Jump only if AL == 0
 	JNZ, //Jump only if AL != 0
@@ -89,7 +91,7 @@ typedef enum
 
 	RET, //Return with value of AL
 
-	EXOP = 255 //if this requires an extra byte, so this CPU allows up to 512 opcodes, this probably wont be used for quite some time........
+	EXOP = 255 //if this requires an extra byte, so this CPU allows up to 512 opcodes, this probably wont be used for quite some time........ if ever.................................
 } cpu_opcode;
 
 u32int process_opcode(farcpu *cpu);

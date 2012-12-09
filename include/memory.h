@@ -22,6 +22,7 @@ typedef struct
 	u8int IR; //Instruction
 	u32int SP; //Stack Pointer
 	u16int CSP; //Current Stack Position
+	u32int JP; //Jump Pointer used for comparison jumping
 	
 } registers;
 
@@ -43,12 +44,13 @@ typedef enum
 	PC,
 	IR,
 	SP,
-	CSP
+	CSP,
+	JP
 } Register;
 
-char *reg_strs[16];
+char *reg_strs[17];
 
-u8int reg_sizes[16];
+u8int reg_sizes[17];
 
 typedef enum
 {

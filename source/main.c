@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	D("This is a build with DEBUG features included.\n");
 
 	double smem; char *type = malloc(1); u32int numbytes = 0;
-	
+	init_gfx();
 	
 	printf("initilizing cpu 1...\n");
 	farcpu cpu1; init_cpu(&cpu1, atoi(argv[1]));
@@ -70,19 +70,20 @@ int main(int argc, char *argv[])
 		if(cpu1.memory_size < prgm_sz){ printf("\nERR:NOT ENOUGH ALLOCATED CPU MEMORY TO RUN PROGRAM!!!\n\n"); return -2; } 
 		for(i = 0; i < prgm_sz; i++)
 		{
-			
 			cpu1.memory[i] = test_program[i];
 			printf("%d:%d, ", test_program[i], cpu1.memory[i]);
 		}
 	}
 	//memcpy(cpu1.memory, test_program, 24);
 	printf("\nExecuting Program:\n");
+	printf("RET IS:%d\n", RET);
 	while(cpu1.regs.PC < (argc < 3) ? prgm_sz : numbytes)
 	{
 		printf("%lX:%s, ", cpu1.regs.PC, n_to_instruction[mem_get8(cpu1.memory, cpu1.regs.PC)]); fflush(stdout);
 		cpu1.regs.IR = mem_read8(cpu1.memory, cpu1.regs.PC);
 		if(cpu1.regs.IR == RET) { printf("\n"); break; } //temporary only, as it will probably be used when functions are implemented
 		process_opcode(&cpu1);
+		gfx_upd();
 	}
 	printf("\nAL:0x%lX BL:0x%lX AB:0x%X BB:0x%X\n", cpu1.regs.AL, cpu1.regs.BL, cpu1.regs.AB, cpu1.regs.BB);
 	printf("-------------------------------------------------------------------------------\n");

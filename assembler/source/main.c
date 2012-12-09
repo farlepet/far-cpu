@@ -84,10 +84,24 @@ int main(int argc, char *argv[])
 				case 14: D("MOVRR\n"); WR(14); op1 = strtok(NULL, " "); op2 = strtok(NULL, " "); WR(getRegister(op1)); WR(getRegister(op2)); break;
 				
 				
+				case 23: D("SJP\n"); WR(23); op1 = strtok(NULL, " "); if(*op1 == '&') addr = strtol(op1+1, NULL, 10); else if(*op1 == '@') addr = strtol(op1+1, NULL, 16); else { D("ERR:UNKNOWN NUMBER TYPE %c\n", *op1); exit(0); } WR32(addr); break;
 				
+				case 24: D("JZ\n"); WR(24); break;
+				case 25: D("JNZ\n"); WR(25); break;
+				case 26: D("JFE\n"); WR(26); break;
+				case 27: D("JNE\n"); WR(27); break;
 				
+				case 28: D("JGT\n"); WR(28); break;
+				case 29: D("JNG\n"); WR(29); break;
+				case 30: D("JGE\n"); WR(30); break;
+				case 31: D("JNGE\n"); WR(31); break;
 				
-				case 35: D("RET\n"); WR(35); break;
+				case 32: D("JLT\n"); WR(32); break;
+				case 33: D("JNL\n"); WR(33); break;
+				case 34: D("JLE\n"); WR(34); break;
+				case 35: D("JNLE\n"); WR(35); break;
+				
+				case 36: D("RET\n"); WR(36); break;
 				
 				default: D("WARN:%s(%d) NOT IMPLEMENTED YET!\n", strtok(str, " "), getOpcode(str)); break;
 			}
@@ -113,7 +127,7 @@ const char *n_to_instruction[] =
 	"MOVNM", "MOVRM", "MOVIM", "MOVMM",
 	"MOVMR", "MOVNR", "MOVIR", "MOVRR",
 	"SHL", "SHR", "AND", "OR", "XOR", "NOT",
-	"HWU", "JMP",
+	"HWU", "JMP", "SJP",
 	"JZ", "JNZ", "JFE", "JNE",
 	"JGT", "JNG", "JGE", "JNGE",
 	"JLT", "JNL", "JLE", "JNLE",
@@ -136,13 +150,14 @@ int getOpcode(char *str)
 
 
 
-char *reg_strs[16] = 
+char *reg_strs[17] = 
 {
 	"AB", "BB", "CB", "DB",
 	"AS", "BS", "CS", "DS",
 	"AL", "BL", "CL", "DL",
 
-	"PC", "IR", "SP", "CSP"
+	"PC", "IR", "SP", "CSP",
+	"JP"
 };
 
 int getRegister(char *str)

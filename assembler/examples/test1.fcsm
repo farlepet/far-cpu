@@ -9,33 +9,32 @@
 # IR - current instruction (not entirely useful for programming with, as you would already know what instruction you are using, but ill add another instruction register for interrupts later)
 # SP - stack pointer/loactionof the stack - not a whole lot of use yet im afraid...
 # CSP - curent stack position relative to SP
+# JP - jump pointer/where to jump if a J*** comparison is called
 
+NOP
 
-INC AB #increment AB by 1
-INC AB #increment AB by 1
-#AB should now be 2
+INC AL
 
-DEC BB #decrement BB by 1
-#BB should now be FF
+MOVNR 1$3 BL
 
-DEC DL #decrement DL by 1
-#DL should now be FFFFFFFF
+SJP &1
 
-MOVNR 1%A3 CB #move 1 byte number 0xA3 to register CB
-
-#MOVNM 2%F00F @FF
-
-MOVRM CB &24 #move contents of register CB to memory address
-
-MOVNR 1$53 BS #move number 53 into register BS
-
-
-ADD $32 $54 #add 32 and 54 into AL
-
-MOVRR AL BL #move (copy) value of AL into BL
-
-MOVRR BL CL #move (copy) value of AL into BL
+JNE
 
 RET
+
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
 
 ####
