@@ -10,6 +10,8 @@
       mem_size: size of the virtal CPU's RAM\n\
 	  program: assembled farcpu program file\n\
    ex: farcpu 64 test1.o\n"
+
+#define ROMMEMLOC
 		
 int ver[3] = {0,2,0};
 
@@ -28,8 +30,8 @@ char test_program[] =
 	DIV, NUMBER, 1, 0, NUMBER, 0, 4,//Add 2 to AL, the long way
 	INC, BB, INC, BB, INC, BB,
 	MOVRR, AL, BL,
-	MOVNM, 0, 255, 0, 0, 0, 0
-
+	MOVNM, 0, 255, 0, 0, 0, 0,
+	JMP, 0, 0, 0, 0 //run main program
 };
 #define prgm_sz (u32int)(sizeof(test_program) / sizeof(test_program[0]))
 
@@ -52,7 +54,6 @@ int main(int argc, char *argv[])
 	smem = makeSmall(prgm_sz, type);
 	printf("\tSystem ROM Size: %.2f%c\n", smem, *type);
 	u32int i;
-	printf("argc:%d", argc);
 	
 	if(argc > 2)
 	{
@@ -76,7 +77,6 @@ int main(int argc, char *argv[])
 	}
 	//memcpy(cpu1.memory, test_program, 24);
 	printf("\nExecuting Program:\n");
-	printf("RET IS:%d\n", RET);
 	while(cpu1.regs.PC < (argc < 3) ? prgm_sz : numbytes)
 	{
 		printf("%lX:%s, ", cpu1.regs.PC, n_to_instruction[mem_get8(cpu1.memory, cpu1.regs.PC)]); fflush(stdout);
@@ -85,12 +85,16 @@ int main(int argc, char *argv[])
 		process_opcode(&cpu1);
 		gfx_upd();
 	}
+	scanf("lol");
+	printf("%d", mem_read8(cpu1.memory, 256));
 	printf("\nAL:0x%lX BL:0x%lX AB:0x%X BB:0x%X\n", cpu1.regs.AL, cpu1.regs.BL, cpu1.regs.AB, cpu1.regs.BB);
 	printf("-------------------------------------------------------------------------------\n");
 	for(i = 0; i < 32; i++)
 		printf("%lX:%X ", i, mem_read8(cpu1.memory, i));
 
 	printf("\n-------------------------------------------------------------------------------\n");
+
+	
 	
 	return cpu1.regs.AL;
 }

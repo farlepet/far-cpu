@@ -10,6 +10,7 @@ const char *n_to_instruction[256] =
 	"JZ", "JNZ", "JFE", "JNE",
 	"JGT", "JNG", "JGE", "JNGE",
 	"JLT", "JNL", "JLE", "JNLE",
+	"MOVNRM", "MOVRRM", "MOVIRM", "MOVMRM",
 	"RET"
 };
 
@@ -74,7 +75,7 @@ u32int process_opcode(farcpu *cpu)
 				case 0: mem_write8(cpu->memory, mem_read32(cpu->memory, PC + 2),mem_read8(cpu->memory, PC + 1)); mem_add+=6; break;
 				case 1: mem_write16(cpu->memory, mem_read32(cpu->memory, PC + 3), mem_read16(cpu->memory, PC + 1)); mem_add+=7; break;
 				case 2: mem_write32(cpu->memory, mem_read32(cpu->memory, PC + 5), mem_read32(cpu->memory, PC + 1)); mem_add+=9; break; }
-			break;
+			mem_add++; break;
 
 		case MOVRM:
 			switch(reg_sizes[mem_read8(cpu->memory, PC)]){
@@ -132,6 +133,12 @@ u32int process_opcode(farcpu *cpu)
 
 		//Low-Level:
 		case HWU:
+			switch(mem_read16(cpu->memory, PC))
+			{
+				case 0x08:
+					gfx_upd(cpu);
+			}
+			mem_add += 2;
 			break;
 
 		//branching:
@@ -180,6 +187,25 @@ u32int process_opcode(farcpu *cpu)
 
 		case JNLE:
 			if(!(cpu->regs.AL <= cpu->regs.BL)){ cpu->regs.PC = cpu->regs.JP; return 1; }break;
+			break;
+
+
+
+		case MOVNRM:
+			break;
+
+		case MOVRRM:
+			switch(reg_sizes[mem_read8(cpu->memory, PC)]){
+				case 1: mem_write8(cpu->memory, get_register(cpu, mem_get8(cpu->memory, PC + 2)), get_register(cpu, mem_read8(cpu->memory, PC+1))); break;
+				case 2: mem_write16(cpu->memory, get_register(cpu, mem_get8(cpu->memory, PC + 2)), get_register(cpu, mem_read8(cpu->memory, PC+1))); break;
+				case 4: mem_write32(cpu->memory, get_register(cpu, mem_get8(cpu->memory, PC + 2)), get_register(cpu, mem_read8(cpu->memory, PC+1))); break;
+			} mem_add += 2;
+			break;
+
+		case MOVIRM:
+			break;
+
+		case MOVMRM:
 			break;
 
 

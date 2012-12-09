@@ -11,30 +11,15 @@
 # CSP - curent stack position relative to SP
 # JP - jump pointer/where to jump if a J*** comparison is called
 
-NOP
 
-INC AL
+#As optimized as possible I beleive...
 
-MOVNR 1$3 BL
+MOVNR 1$3 BL #Set BL to 3 (for comparison)
 
-SJP &1
+SJP &9 #Set the Jump Pointer to the location"INC AL"
 
-JNE
+INC AL #Increment the register AL
 
-RET
+JNE #Jump to JP(2("INC AL")) if AL != BL(3)
 
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-
-####
+RET #Retrun when done (anways good practice)

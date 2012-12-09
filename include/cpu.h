@@ -1,5 +1,6 @@
 #include <common.h>
 #include <memory.h>
+#include <gfx.h>
 
 #ifndef CPU_H
 #define CPU_H
@@ -22,16 +23,6 @@ typedef enum
 	UNLIMITED
 } cpu_speed; //maximum operations per second
 
-typedef struct
-{
-	char *memory;
-	u32int memory_size;
-	registers regs;
-	u8int IO;
-	bool inOut; //wether IO is an input or an output (true = input)
-	bool overflow;
-	cpu_speed speed; //not yet inplimented, it will be a while
-} farcpu;
 
 void cpu_reset(farcpu *cpu);
 
@@ -87,6 +78,13 @@ typedef enum
 	JNL, //Jump only if AL !< BL
 	JLE, //Jump only if AL <= BL
 	JNLE, //Jump only if AL !<= BL
+
+
+
+	MOVNRM, //Move number to register pointing to memory: byte(size of number: 0:byte 1:word 2:dword), (byte/word/dword), Register
+	MOVRRM, //Move Register to register pointing to memory: Register, Register
+	MOVIRM, //Move IO to register pointing to memory: Register
+	MOVMRM, //Move memory contents to register pointing to memory: long, Register
 
 
 	RET, //Return with value of AL

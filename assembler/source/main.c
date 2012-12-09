@@ -21,9 +21,9 @@ int getOpcode(char *str);
 int getRegister(char *str);
 int write_ASMD(char *str);
 void write_mov_n(char *str);
-#define WR(val) fprintf(output, "%c", val)
-#define WR16(val) fprintf(output, "%c%c", (val&0xFF00)>>7, val&0xFF)
-#define WR32(val) fprintf(output, "%c%c%c%c", (u8int)((val&0xFF)), (u8int)((val&0xFF00)>>7), (u8int)((val&0xFF0000)>>15), (u8int)((val&0xFF000000)>>23))
+#define WR(val) fprintf(output, "%c", (u8int)val)
+#define WR16(val) fprintf(output, "%c%c", (u8int)val&0xFF, (u8int)(val&0xFF00)>>8)
+#define WR32(val) fprintf(output, "%c%c%c%c\n", (u8int)((val&0xFF)), (u8int)((val&0xFF00)>>8), (u8int)((val&0xFF0000)>>16), (u8int)((val&0xFF000000)>>24))
 #define D printf
 
 FILE *input, *output;
@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
 	}
 	
 	char *op1, *op2, *op3, *op4;
-	u32int addr = 0;;
+	u32int addr = 0;
+	u32int tnum = 0;
 	
 	if((input = fopen(argv[1], "r")) == NULL)
 	{	printf("ERR:FILE %s COULD NOT BE OPENED!\n", argv[1]); return -1;	}
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
 				case 6: D("DIV\n"); WR(6); op1 = strtok(NULL, " "); op2 = strtok(NULL, " "); write_ASMD(op1); write_ASMD(op2); break; //DIV
 				
 				case 7: D("MOVNM\n"); WR(7); op1 = strtok(NULL, " "); op2 = strtok(NULL, " "); write_mov_n(op1); 
-					if(*op2 == '&') addr = strtol(op2+1, NULL, 10); else if(*op2 == '@') addr = strtol(op2+1, NULL, 16); else { D("ERR:UNKNOWN NUMBER TYPE %c\n", *op2); exit(0); } WR32(addr); break;
+					if(*op2 == '&') WR32(strtol(op2+1, NULL, 10)); else if(*op2 == '@') WR32(strtol(op2+1, NULL, 16)); else { D("ERR:UNKNOWN NUMBER TYPE %c\n", *op2); exit(0); } break;
 					
 				case 8: D("MOVRM\n"); WR(8); op1 = strtok(NULL, " "); op2 = strtok(NULL, " "); WR(getRegister(op1));
 					if(*op2 == '&') addr = strtol(op2+1, NULL, 10); else if(*op2 == '@') addr = strtol(op2+1, NULL, 16); else { D("ERR:UNKNOWN NUMBER TYPE %c\n", *op2); exit(0); } WR32(addr); break;
@@ -84,6 +85,10 @@ int main(int argc, char *argv[])
 				case 14: D("MOVRR\n"); WR(14); op1 = strtok(NULL, " "); op2 = strtok(NULL, " "); WR(getRegister(op1)); WR(getRegister(op2)); break;
 				
 				
+				case 21: D("HWU\n"); WR(21); op1 = strtok(NULL, " "); if(*op1 == '$') tnum = strtol(op1+1, NULL, 10); else if(*op1 == '%') tnum = strtol(op1+1, NULL, 16); else { D("ERR:UNKNOWN NUMBER TYPE %c\n", *op1); exit(0); } WR16(tnum); break;
+				
+				case 22: D("JMP\n"); WR(22); op1 = strtok(NULL, " "); if(*op1 == '&') addr = strtol(op1+1, NULL, 10); else if(*op1 == '@') addr = strtol(op1+1, NULL, 16); else { D("ERR:UNKNOWN NUMBER TYPE %c\n", *op1); exit(0); } WR32(addr); break;
+				
 				case 23: D("SJP\n"); WR(23); op1 = strtok(NULL, " "); if(*op1 == '&') addr = strtol(op1+1, NULL, 10); else if(*op1 == '@') addr = strtol(op1+1, NULL, 16); else { D("ERR:UNKNOWN NUMBER TYPE %c\n", *op1); exit(0); } WR32(addr); break;
 				
 				case 24: D("JZ\n"); WR(24); break;
@@ -101,7 +106,9 @@ int main(int argc, char *argv[])
 				case 34: D("JLE\n"); WR(34); break;
 				case 35: D("JNLE\n"); WR(35); break;
 				
-				case 36: D("RET\n"); WR(36); break;
+				case 37: D("MOVRRM\n"); WR(37); op1 = strtok(NULL, " "); op2 = strtok(NULL, " "); WR(getRegister(op1)); WR(getRegister(op2)); break;
+				
+				case 40: D("RET\n"); WR(40); break;
 				
 				default: D("WARN:%s(%d) NOT IMPLEMENTED YET!\n", strtok(str, " "), getOpcode(str)); break;
 			}
@@ -131,6 +138,7 @@ const char *n_to_instruction[] =
 	"JZ", "JNZ", "JFE", "JNE",
 	"JGT", "JNG", "JGE", "JNGE",
 	"JLT", "JNL", "JLE", "JNLE",
+	"MOVNRM", "MOVRRM", "MOVIRM", "MOVMRM",
 	"RET"
 };
 
@@ -267,17 +275,15 @@ void write_mov_n(char *str)
 	else { D("ERR:UNKNOWN DATA TYPE:%c", *str); exit(0); }
 	if(tmp == 2)
 	{
-		WR((int)(addr&0xFF000000)>>23);
-		WR((int)(addr&0xFF0000)>>15);
-		WR((int)(addr&0xFF00)>>7);
-		WR((int)(addr&0xFF));
+		WR32(addr);
 	}
 	
 	else if(tmp == 1)
 	{
-		WR((int)(addr&0xFF00)>>7);
-		WR((int)(addr&0xFF));
+		WR16((int)addr);
 	}
 	
 	else if(tmp == 0) WR((int)(addr&0xFF));
+	
+	D("N:0x%lX\n", addr);
 }

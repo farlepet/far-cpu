@@ -35,9 +35,14 @@ void UpdateScreen(SDL_Surface* screen)
     SDL_Flip(screen); 
 }
 
-int gfx_upd()
+int gfx_upd(farcpu *cpu)
 {
 	UpdateScreen(sdl_screen);
+	int x, y;
+	for(y = 0; y < CHEIGHT; y++)
+		for(x = 0; x < CWIDTH; x++)
+			drawChar(mem_read8(cpu->memory, CMEMLOC + x + y * CWIDTH), x * 8, y * 8, 0xFFFFFF);
+			                   
 	return 0;
 }
 
@@ -80,7 +85,8 @@ void drawChar(u8int ch, u32int x, u32int y, u32int c)
 	for(i = 0; i < 8; i++)
 		for(j = 0; j < 8; j++)
 		{
-			if((g_8x8_font[ch * 8 + i] & (1 << j)) != 0) setpixel(x + j, y + i, c);
+			if((g_8x8_font[ch * 8 + i] & ((128) >> j)) != 0) setpixel(x + j, y + i, c);
+			else setpixel(x + j, y + i, 0);
 		}
 }
 

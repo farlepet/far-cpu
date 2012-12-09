@@ -1,4 +1,5 @@
 #include <common.h>
+#include <memory.h>
 #include <SDL/SDL.h>
 #include <math.h>
 
@@ -14,7 +15,7 @@
 #define CWIDTH  80
 #define CHEIGHT 60
 #define CMEMSZ  CWIDTH*CHEIGHT //80*60 = 4800 (4KB memory for on-screen info alone!)
-//2KB will grow to 6848(6KB) when I transition to placing character bitmaps in CPU memory
+//4KB will grow to 6848(6KB) when I transition to placing character bitmaps in CPU memory
 
 u8int g_8x8_font[2048];
 int init_gfx();
