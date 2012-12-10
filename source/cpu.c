@@ -74,12 +74,12 @@ u32int process_opcode(farcpu *cpu)
 			switch(mem_read8(cpu->memory, PC)){ 
 				case 0: mem_write8(cpu->memory, mem_read32(cpu->memory, PC + 2),mem_read8(cpu->memory, PC + 1)); mem_add+=6; break;
 				case 1: mem_write16(cpu->memory, mem_read32(cpu->memory, PC + 3), mem_read16(cpu->memory, PC + 1)); mem_add+=7; break;
-				case 2: mem_write32(cpu->memory, mem_read32(cpu->memory, PC + 5), mem_read32(cpu->memory, PC + 1)); mem_add+=9; break; }
+				case 2: mem_write32(cpu->memory, mem_read32(cpu->memory, PC + 6), mem_read32(cpu->memory, PC + 1)); mem_add+=9; break; }
 			mem_add++; break;
 
 		case MOVRM:
 			switch(reg_sizes[mem_read8(cpu->memory, PC)]){
-				case 1: mem_write8(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); D("LLL\n");FLS(); break;
+				case 1: mem_write8(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); break;
 				case 2: mem_write16(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); break;
 				case 4: mem_write32(cpu->memory, mem_read32(cpu->memory, PC + 1), get_register(cpu, mem_read8(cpu->memory, PC))); break;
 			}

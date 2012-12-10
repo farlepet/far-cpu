@@ -22,7 +22,7 @@ int getRegister(char *str);
 int write_ASMD(char *str);
 void write_mov_n(char *str);
 #define WR(val) fprintf(output, "%c", (u8int)val)
-#define WR16(val) fprintf(output, "%c%c", (u8int)val&0xFF, (u8int)(val&0xFF00)>>8)
+#define WR16(val) fprintf(output, "%c%c", (u8int)val&0xFF, (u8int)((val&0xFF00)>>8))
 #define WR32(val) fprintf(output, "%c%c%c%c\n", (u8int)((val&0xFF)), (u8int)((val&0xFF00)>>8), (u8int)((val&0xFF0000)>>16), (u8int)((val&0xFF000000)>>24))
 #define D printf
 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 				default: D("WARN:%s(%d) NOT IMPLEMENTED YET!\n", strtok(str, " "), getOpcode(str)); break;
 			}
 		}
-		else D("#commented line\n");
+		//else D("#commented line\n");
 	}
 	
 	//printf(str);
@@ -277,18 +277,23 @@ void write_mov_n(char *str)
 	u32int addr;
 	if(*str == '$') addr = strtol(str+1, NULL, 10);
 	else if(*str == '%') addr = strtol(str+1, NULL, 16);
+	
 	else { D("ERR:UNKNOWN DATA TYPE:%c", *str); exit(0); }
+
+	D("0x%lX:0x%lX\n\n", strtol(str+1, NULL, 16), addr);
+	
 	if(tmp == 2)
 	{
+		
 		WR32(addr);
 	}
 	
 	else if(tmp == 1)
 	{
-		WR16((int)addr);
+		WR16(addr);
 	}
 	
-	else if(tmp == 0) WR((int)(addr&0xFF));
+	else if(tmp == 0) WR(addr);
 	
-	D("N:0x%lX\n", addr);
+	//D("N:0x%lX\n", addr);
 }

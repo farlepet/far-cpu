@@ -54,7 +54,6 @@ int main(int argc, char *argv[])
 	smem = makeSmall(prgm_sz, type);
 	printf("\tSystem ROM Size: %.2f%c\n", smem, *type);
 	u32int i;
-	D("opening file\n");FLS();
 	
 	if(argc > 2)
 	{
@@ -65,9 +64,7 @@ int main(int argc, char *argv[])
 		fseek(f, 0L, SEEK_SET);	
 		smem = makeSmall(numbytes, type);
 		if(cpu1.memory_size <  numbytes){ printf("\nERR:NOT ENOUGH ALLOCATED CPU MEMORY TO RUN PROGRAM!!! NEEDS %lf%c\n\n", smem, *type); return -3; }
-		D("copying\n");FLS();
 		fread(cpu1.memory, 1, numbytes, f);
-		D("copied\n");FLS();
 		fclose(f);
 	}
 	
@@ -80,17 +77,20 @@ int main(int argc, char *argv[])
 		}
 	}
 	//memcpy(cpu1.memory, test_program, 24);
+	SDL_Event evnt = get_input();
 	printf("\nExecuting Program:\n");
 	while(cpu1.regs.PC < (argc < 3) ? prgm_sz : numbytes)
 	{
+		evnt = get_input();
+		if(evnt.type == SDL_QUIT) break;
 		printf("%lX:%s, ", cpu1.regs.PC, n_to_instruction[mem_get8(cpu1.memory, cpu1.regs.PC)]); fflush(stdout);
 		cpu1.regs.IR = mem_read8(cpu1.memory, cpu1.regs.PC);
 		if(cpu1.regs.IR == RET) { printf("\n"); break; } //temporary only, as it will probably be used when functions are implemented
 		process_opcode(&cpu1);
 		gfx_upd();
 	}
-	scanf("lol");
-	printf("%d", mem_read8(cpu1.memory, 256));
+	while(evnt.type != SDL_QUIT) evnt = get_input();
+	printf("%lX", mem_read32(cpu1.memory, 256));
 	printf("\nAL:0x%lX BL:0x%lX AB:0x%X BB:0x%X\n", cpu1.regs.AL, cpu1.regs.BL, cpu1.regs.AB, cpu1.regs.BB);
 	printf("-------------------------------------------------------------------------------\n");
 	for(i = 0; i < 32; i++)

@@ -1,20 +1,21 @@
 #bios.fcsm
+#written in FarCpu 'SeMbly
+
 #the BIOS for the farcpu system
 #made to be fairly fast
 
-OUTN $1 #"clear screen" for gpu
-#HWU $8  #update gpu, causing "clear screen"
-OUTN $0 #clear output back to 0
+#the starting size of the screen is 40x25
+OUTN $1
+HWU $8
+OUTN $0
+
+MOVRR PC AL #get location of bios, as it may move with CPU updates
 
 #write some text at the top
-MOVNM 1%66 @100 #f
-MOVNM 1%61 @101 #a
-MOVNM 1%72 @102 #r
-MOVNM 1%63 @103 #c
-MOVNM 1%70 @104 #p
-MOVNM 1%75 @105 #u
+MOVNM 4%63726166 @100 #write farc to the screen
+MOVNM 2%7570 @104 #pu
 
-HWU $8
+#HWU $8
 
 RET #for testing porposes only before actual implementation
 

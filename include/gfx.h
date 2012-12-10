@@ -20,6 +20,7 @@
 u8int g_8x8_font[2048];
 int init_gfx();
 int gfx_upd();
+SDL_Event get_input();
 void drawChar(u8int ch, u32int x, u32int y, u32int c);
 
 #endif

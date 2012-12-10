@@ -1,6 +1,6 @@
 #include <gfx.h>
 
-u8int *gfx_buff = CMEMLOC;
+u8int *gfx_buff = (u8int *)CMEMLOC;
 
 SDL_Surface *sdl_screen;
 SDL_Event sdl_event;
@@ -48,6 +48,12 @@ int gfx_upd(farcpu *cpu)
 	UpdateScreen(sdl_screen);
 			                   
 	return 0;
+}
+
+SDL_Event get_input()
+{
+	SDL_PollEvent(&sdl_event);
+	return sdl_event;
 }
 
 
